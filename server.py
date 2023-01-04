@@ -2,6 +2,8 @@ import os
 import http.server
 import socketserver
 import pathlib
+import asyncio
+import websockets
 
 from http import HTTPStatus
 
@@ -30,4 +32,3 @@ port = int(os.getenv('PORT', 80))
 print('Listening on port %s' % (port))
 httpd = socketserver.TCPServer(('', port), Handler)
 httpd.serve_forever()
-
