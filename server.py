@@ -3,6 +3,7 @@ import http.server
 import socketserver
 import pathlib
 import asyncio
+import websockets
 
 from http import HTTPStatus
 
