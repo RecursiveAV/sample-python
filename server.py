@@ -5,12 +5,20 @@ import socketserver
 from http import HTTPStatus
 from http.server import HTTPServer, BaseHTTPRequestHandler
 
-class Handler(http.server.SimpleHTTPRequestHandler):
+class Server(BaseHTTPRequestHandler):
     def do_GET(self):
-        self.send_response(HTTPStatus.OK)
+        self.send_response(200)
+        self.send_header('Content-type', 'text/html')
         self.end_headers()
-        msg = 'Hello! you requested %s' % (self.path)
-        self.wfile.write(msg.encode())
+
+        # get the page
+        path = self.path
+        if path == '/':
+            with open('home.html', 'rb') as page:
+                self.wfile.write(page.read())
+        elif path == '/about':
+            with open('about.html', 'rb') as page:
+                self.wfile.write(page.read())
 
 
 port = int(os.getenv('PORT', 80))
