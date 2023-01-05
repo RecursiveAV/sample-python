@@ -1,9 +1,52 @@
 <html>
-    <head>
-        <title>home page</title>
-        <meta charset="UTF-8">
-    </head>
-    <body>
-        <h1>This is home page</h1>
-    </body>
+  <head>
+    <title>WebSocket Example</title>
+    <style>
+      #submit-button {
+        display: block;
+        margin: 0 left;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>WebSocket Example</h1>
+    <form id="name-form">
+      <label for="name">Name:</label>
+      <input type="text" id="name" name="name">
+    </form>
+    <form id="email-form">
+      <label for="email">Email:</label>
+      <input type="text" id="email" name="email">
+    </form>
+    <button id="submit-button">Submit</button>
+    <button id="button1">Reboot Main PC</button>
+    <button id="button2">Reboot Projection PC</button>
+    <button id="button3">Reboot Login PC</button>
+
+    <script>
+      const socket = new WebSocket('ws://localhost:8080');
+      const nameForm = document.getElementById('name-form');
+      const emailForm = document.getElementById('email-form');
+      const submitButton = document.getElementById('submit-button');
+
+      submitButton.addEventListener('click', () => {
+        const name = document.getElementById('name').value;
+        const email = document.getElementById('email').value;
+        socket.send(`Name submitted: ${name}`);
+        socket.send(`Email submitted: ${email}`);
+      });
+
+      document.getElementById('button1').addEventListener('click', () => {
+        socket.send('Reboot Main');
+      });
+
+      document.getElementById('button2').addEventListener('click', () => {
+        socket.send('Reboot Projection');
+      });
+
+      document.getElementById('button3').addEventListener('click', () => {
+        socket.send('Reboot Login');
+      });
+    </script>
+  </body>
 </html>
