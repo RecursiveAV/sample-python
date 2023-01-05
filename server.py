@@ -1,42 +1,17 @@
-import os
-import http.server
-import socketserver
-import pathlib
+#!/usr/bin/env python
+
 import asyncio
+
 import websockets
 
-from http import HTTPStatus
+async def handler(websocket):
+    while True:
+        message = await websocket.recv()
+        print(message)
 
-class Handler(http.server.SimpleHTTPRequestHandler):
-    def do_GET(self):
-        if self.path == '/':
-            file_path = pathlib.Path('home.html')
-            if file_path.is_file():
-                self.send_response(HTTPStatus.OK)
-                self.send_header('Content-Type', 'text/html')
-                self.end_headers()
-                with file_path.open('rb') as f:
-                    self.wfile.write(f.read())
-            else:
-                self.send_response(HTTPStatus.NOT_FOUND)
-                self.end_headers()
-        else:
-            self.send_response(HTTPStatus.OK)
-            self.end_headers()
-            msg = 'Hello! you requested %s' % (self.path)
-            self.wfile.write(msg.encode())
+async def main():
+    async with websockets.serve(handler, "", 8001):
+        await asyncio.Future()  # run forever
 
-        # Check if the request includes a "websocket" header
-        if 'websocket' in self.headers:
-            # Establish a WebSocket connection with the client
-            ws = websocket.WebSocket()
-            ws.connect(self.headers['websocket'], self.headers)
-
-            # Send a message to the client
-            ws.send('Hello from the server!')
-            ws.close()
-
-port = int(os.getenv('PORT', 80))
-print('Listening on port %s' % (port))
-httpd = socketserver.TCPServer(('', port), Handler)
-httpd.serve_forever()
+if __name__ == "__main__":
+    asyncio.run(main())
