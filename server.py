@@ -26,6 +26,14 @@ class Handler(http.server.SimpleHTTPRequestHandler):
             self.end_headers()
             msg = 'Hello! you requested %s' % (self.path)
             self.wfile.write(msg.encode())
+            
+            
+            # Send a WebSocket message to any connected clients
+        if 'websocket' in self.headers:
+            ws = websocket.WebSocket()
+            ws.connect(self.headers['websocket'], self.headers)
+            ws.send('Hello from the server!')
+            ws.close()
 
 
 port = int(os.getenv('PORT', 80))
